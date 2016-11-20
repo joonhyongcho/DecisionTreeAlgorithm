@@ -1,7 +1,7 @@
 ## Decision Tree Algorithm
 
 Authored by Joon H Cho. '17 Dartmouth.
-This python application builds a decision tree from the flags dataset at the uci.edu datasets archive. http://archive.ics.uci.edu/ml/datasets/Flags. It creates a decision tree from the data and runs a few classification tests. This application is built for Dartmouth's Intro to Computation Neuroscience class, taught by Professor Granger.
+This python application builds a decision tree from the contact lenses dataset at the uci.edu datasets archive linked [!here](https://archive.ics.uci.edu/ml/datasets/Lenses). It creates a decision tree from the data and runs a few classification tests. This application is built for Dartmouth's Intro to Computation Neuroscience class, taught by Professor Granger.
 
 ## Installation
 
