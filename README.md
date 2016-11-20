@@ -27,7 +27,7 @@ And so, `buildTree` will determine whether to split the current data by tear pro
 The "best" split of the data is determined by a statistical property called *information gain*. It measures how well a given attribute separates the training examples according to a target classification. The target classification in our case is whether the patient should be fitted with 1. hard contact lenses 2. soft contact lenses or 3. no lenses at all. Information gain relies on entropy, which measures the "impurity" of a collection of examples. More information on entropy can be found here[!https://en.wikipedia.org/wiki/Entropy_(information_theory)].
 
 Entropy is calculated by the equation:
-![description](entropy.jpg)
+![description](entropy.png)
 
 
 To test the which attribute to test at each node in the tree, we need to select the attribute that is most useful for classifying the examples. We use a property, called information gain, that measures how well a given attribute separates the training examples according to their target classification. To this end, we use entropy, which measures the impurity of a collection of examples. Given a collection S, containing positive and negative examples of a target concept, the entropy of S relative to boolean classification is
