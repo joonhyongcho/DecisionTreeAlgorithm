@@ -1,29 +1,25 @@
 ## Decision Tree Algorithm
 
 Authored by Joon H Cho. '17 Dartmouth.
-This python application builds a decision tree from the contact lenses dataset at the uci.edu datasets archive linked [!here](https://archive.ics.uci.edu/ml/datasets/Lenses). It creates a decision tree from the data and runs a few classification tests. This application is built for Dartmouth's Intro to Computation Neuroscience class, taught by Professor Granger.
-
-## Installation
-
-To run the visualization components of the program, you must install the PIL library, which can be installed by running `pip install image` on the terminal. You must have `pip` installed in order to retrieve PIL. You may find that pip does not install the PIL library properly, in which case you should run `python -m pip install image`, which will install the libraries in the folder of your default python interpreter.
+This python application builds a decision tree from the contact lenses dataset at the uci.edu datasets archive linked [!here](https://archive.ics.uci.edu/ml/datasets/Lenses). It creates a decision tree from the data and runs a few classification tests. This application is built for Dartmouth's Intro to Computational Neuroscience class, taught by Professor Granger.
 
 ## Algorithm Specifics
 
-Again, this program implements the decision tree learning algorithm, which classifies instances of a dataset by traversing down a decision tree until reaching a leaf node, which provides the classification value. At each node, the classification algorithm tests an attribute of the instance, then traverses down the appropriate branch to the node which contains the value of the tested attribute. This step continues until we have reached a leaf node.
+This program implements the decision tree learning algorithm, which classifies instances of a dataset by traversing down a decision tree until reaching a leaf node, which provides the classification value. At each node, the classification algorithm tests an attribute of the instance, then traverses down the appropriate branch to the node which contains the value of that attribute within the instance. This step continues until we have reached a leaf node.
 
 ## Implementation
 
-The algorithm is implemented in python, and the program runs in two steps: Build the decision tree, then classify instances of the data set. To run the program, run `python decisionTree.py` in terminal. The program parses the data in lenses.data.txt and then builds the decision tree. After, it classifies the instance [2,  1,  1,  2,  2], and prints the decision making at each step of the classification algorithm. If you copy a row from the lenses.data.txt file, remember to remove the first column as the first column marks a unique id for each row and is not part of the decision learning.
+The algorithm is implemented in python, and the program runs in two steps: 1. build the decision tree then 2. classify instances of the data set. To run the program, run `python decisionTree.py` in terminal. The program parses the data in lenses.data.txt and then builds the decision tree. After, it classifies the instance `[2,  1,  1,  2,  2]`, and prints the decision making at each step of the classification algorithm. You can run `classify(instance, tree)` as many time as you like, with different instance values. If you copy a row from the lenses.data.txt file, remember to remove the first column as the first column marks a unique id for each row and is not part of the decision learning.
 
 ### Building the Decision Tree
 
-The algorithms recursively constructs the decision tree from top to bottom, starting from the root, which looks at all of the rows in the dataset. At each iteration of the `buildTree` method, the algorithm calculates the attribute that would "best" split the current rows. In this dataset, each column represents a different attribute. The column number, the attribute represented at that column, and possible values, which are represented by numbers in the dataset, are listed below:
+The algorithm recursively constructs the decision tree from top to bottom, starting from the root, which looks at all of the rows in the dataset. At each iteration of the `buildTree` method, the algorithm calculates the attribute that would "best" split the current rows. In this dataset, each column represents a different attribute. The column number, the attribute represented at that column, and possible values, which are represented by numbers in the dataset, are listed below:
 1. age of the patient: (1) young, (2) pre-presbyopic, (3) presbyopic
 2. spectacle prescription:  (1) myope, (2) hypermetrope
 3. astigmatic:     (1) no, (2) yes
 4. tear production rate:  (1) reduced, (2) normal
 
-And so, `buildTree` will determine whether to split the current data by tear production rate or age of the patient. After deciding which attribute to use, the algorithm then splits the data into disjoint sets, where each set shares the same value for that attribute. It then runs `buildTree` on each set and adds the resulting subtrees to the children array of the current decision node.
+So, `buildTree` will determine whether to split the current data by, for example, tear production rate or age of the patient. After deciding which attribute to use, the algorithm then splits the data into disjoint sets, where each set shares the same value for that attribute. It then runs `buildTree` on each divided set and adds the resulting subtrees to the children array of the current decision node.
 
 The "best" split of the data is determined by a statistical property called *information gain*. It measures how well a given attribute separates the training examples according to a target classification. The target classification in our case is whether the patient should be fitted with 1. hard contact lenses 2. soft contact lenses or 3. no lenses at all. Information gain relies on entropy, which measures the "impurity" of a collection of examples. More information on entropy can be found [here](https://en.wikipedia.org/wiki/Entropy).
 
@@ -39,9 +35,9 @@ The equation for information gain is:
 
 where S is the current set, A is the selected attribute, Entropy(S) is the entropy of the current set, Values(A) are all the possible values of attribute A, and Sv is the set within S that contains the current value v.
 
-Armed with the information gain equation, the algorithm iterates through every possible attribute that could divide the current dataset, keeps track of which attribute maximizes Gain(S,A), and then selects that attribute as the criteria for the current node. It then divides the data set by that attribute and creates children nods that  are assigned a corresponding value from Values(A).
+Armed with the information gain equation, the algorithm iterates through every possible attribute that could divide the current dataset, keeps track of which attribute maximizes Gain(S,A), and then selects that attribute as the criteria for the current node. It then divides the data set by that attribute and creates children nodes that are assigned a corresponding value from Values(A).
 
-If there is no attribute that divides the set further, then the node becomes a leaf node, which is marked by an attribute `self.results`. This is a map between the classification and the rows that have reached this node. `self.results` should contain only one entry because leaf nodes should make one, final classification.
+If there is no attribute that divides the set further, meaning that no attribute will change entropy, then the node becomes a leaf node, which is marked by an node property `self.results`. `self.results` is a map between the classification and the rows that have reached this node. `self.results` should contain only one entry because leaf nodes should make one, final classification.
 
 More information on Decision Tree Learning can be found [here](https://www.cs.princeton.edu/courses/archive/spring07/cos424/papers/mitchell-dectrees.pdf)
 
@@ -82,7 +78,7 @@ Check Attribute: Tear Production Rate
        if Presbyopic Class: Not Fitted
 ```
 
-It was difficult to draw an actual tree. Nodes that are directly indented under another represent direct children. For example, the root's criteria (selected attribute that divides the set) is Tear Production Rate, and its children are two nodes, where one is a leaf node (if reduced the classification is Not Fitted), and the other is a decision node that checks the Astigmatic attribute.
+It was difficult to draw an actual tree, so the program prints the trees in indentation format. Nodes that are directly indented under another represent direct children. For example, the root's criteria (selected attribute that divides the set) is Tear Production Rate, and its children are two nodes, where one is a leaf node (if reduced the classification is Not Fitted), and the other is a decision node that checks the Astigmatic attribute.
 
 ## Conclusions
 
