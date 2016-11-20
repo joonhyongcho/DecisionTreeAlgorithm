@@ -1,13 +1,6 @@
 from __future__ import print_function
 from math import log
 from collections import deque
-from PIL import Image,ImageDraw
-
-# religion of country from size and colours in flag
-# http://gabrielelanaro.github.io/blog/2016/03/03/decision-trees.html
-# http://www.patricklamle.com/Tutorials/Decision%20tree%20python/tuto_decision%20tree.html
-#
-#
 
 # These arrays convert the number values in the data set to the Attributes they describe in English
 lenseAttributes = [
@@ -60,9 +53,11 @@ def calculateEntropy(rows, col):
 
     return entropy
 
+# divideRowsByClass divides rows by classification
 def divideRowsByClass(rows, classIdx):
     return divideSetByCol(rows, classIdx)
 
+# buildTree recursively builds tree nodes by measuring information gain
 def buildTree(rows, classIdx):
     if len(rows) == 0:
         return DNode()
@@ -100,110 +95,18 @@ def buildTree(rows, classIdx):
     else:
         return DNode(results=divideRowsByClass(rows, classIdx))
 
-def classify(observation,tree):
+# classify classifies an instance using the given decision tree
+def classify(instance,tree):
     if tree.results!=None:
         return tree.results.keys()[0]
     else:
-        value = observation[tree.col]
+        value = instance[tree.col]
         print("Checking attribute " +str(lenseAttributes[tree.col][0]) + " and val is " + str(lenseAttributes[tree.col][1][value-1]))
         for child in tree.children:
             if child.value == value:
-                return classify(observation, child)
+                return classify(instance, child)
 
     return None
-
-def getwidth(tree):
-    queue = deque()
-    queue.append((tree, 0))
-    maxLevel = 0
-    currLevel = 0
-    maxWidth = 0
-    currWidth = 0
-
-    while queue:
-        currTup = queue.popleft()
-        node = currTup[0]
-        level = currTup[1]
-
-        if level != currLevel and currWidth > maxWidth:
-            maxWidth = currWidth
-            maxLevel = currLevel
-        elif level != currLevel:
-            currLevel = level
-            currWidth = 1
-        else:
-            currWidth += 1
-
-        if node.children:
-            for child in node.children:
-                queue.append((child, level + 1))
-
-    return maxWidth
-
-def getdepth(tree):
-    queue = deque()
-    queue.append((tree, 0))
-
-    maxLevel = 0
-
-    while queue:
-        currTup = queue.popleft()
-        node = currTup[0]
-        level = currTup[1]
-
-        if level > maxLevel:
-            maxLevel = level
-
-        if node.children:
-            for child in node.children:
-                queue.append((child, level + 1))
-
-    return maxLevel
-
-def drawtree(tree,jpeg='tree.jpg'):
-    w = getwidth(tree) * 100
-    h = getdepth(tree) * 100 + 120
-
-    img=Image.new('RGB',(w,h),(255,255,255))
-    draw=ImageDraw.Draw(img)
-
-    drawnode(draw,tree,w/2,20)
-    img.save(jpeg,'JPEG')
-
-def drawnode(draw,tree,x,y):
-    if tree.results==None:
-        # Get the width of each branch
-        widths = []
-        for child in tree.chidren:
-            widths.append(getwidth(child) * 100)
-        sumWidths = sum(widths)
-        # w1=getwidth(tree.fb)*100
-        # w2=getwidth(tree.tb)*100
-
-        # Determine the total space required by this node
-        spaces = []
-        # for width in widths:
-            # if len(widths) % 2:
-
-
-        left=x-(sumWidths)/len(sumWidths)
-        right=x+(sumWidths)/len(sumWidths)
-
-        # Draw the condition string
-        draw.text((x-20,y-10),str(tree.col)+':'+str(tree.value),(0,0,0))
-
-        # Draw links to the branches
-        for width in tree.children:
-            draw.line((x,y, left+w1/2,y+100),fill=(255,0,0))
-        draw.line((x,y,left+w1/2,y+100),fill=(255,0,0))
-        draw.line((x,y,right-w2/2,y+100),fill=(255,0,0))
-
-        # Draw the branch nodes
-        drawnode(draw,tree.fb,left+w1/2,y+100)
-        drawnode(draw,tree.tb,right-w2/2,y+100)
-    else:
-        txt=' \n'.join(['%s:%d'%v for v in tree.results.items()])
-        draw.text((x-20,y),txt,(0,0,0))
 
 def printTree(tree,indent=''):
     if tree.results!=None:
@@ -214,7 +117,6 @@ def printTree(tree,indent=''):
         if tree.children:
             for child in tree.children:
                 print(indent + " " + "if " + str(lenseAttributes[tree.col][1][child.value-1]), end=" ")
-                # print(indent + " " + "if " + str(lenseAttributes[child.col][1][child.value-1]), end= " ")
                 printTree(child,indent+'  ')
 
 data = parseTextToArray()
